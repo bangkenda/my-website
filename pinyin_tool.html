@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>Chèn Pinyin vào văn bản</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC&display=swap');
+
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: auto;
+      background: #f9f9f9;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-bottom: 10px;
+      font-family: 'Noto Sans SC', sans-serif;
+      font-size: 18px;
+      padding: 8px;
+      resize: vertical;
+      outline: none;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+    }
+
+    textarea:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 3px #007bff44;
+    }
+
+    textarea[spellcheck="false"] {
+      spellcheck: false;
+    }
+
+    button {
+      padding: 8px 16px;
+      margin-top: 10px;
+      font-size: 16px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #copyBtn {
+      display: none;
+      margin-left: 10px;
+      background: #28a745;
+    }
+
+    #copyBtn:hover {
+      background: #1e7e34;
+    }
+
+    .output {
+      background: #f0f0f0;
+      padding: 15px;
+      white-space: pre-wrap;
+      margin-top: 20px;
+      border-radius: 8px;
+      font-family: Consolas, monospace;
+      font-size: 18px;
+    }
+
+    ruby {
+      font-size: 24px;
+    }
+
+    rt {
+      font-size: 14px;
+      color: gray;
+    }
+
+    .copied-message {
+      color: green;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+    <div>
+        <a href="index.html">HOME PAGE</a>
+    </div>
+<h2>🈶️ Tạo HTML có Pinyin (thẻ &lt;ruby&gt;)</h2>
+
+<label>🔹 Văn bản tiếng Trung:</label>
+<textarea id="chinese" spellcheck="false">我们每个人都明白，教育有多重要。</textarea>
+
+<label>🔹 Pinyin (phân cách bằng dấu cách):</label>
+<textarea id="pinyin" spellcheck="false">Wǒ men měi gè rén dōu míng bái jiào yù yǒu duō zhòn gyào</textarea>
+
+<br>
+<button onclick="convert()">✨ Chuyển đổi</button>
+<button id="copyBtn" onclick="copyResult()">📋 Copy kết quả</button>
+<div class="copied-message" id="copiedMessage">✅ Đã copy vào clipboard!</div>
+<button onclick="clearAll()" style="background: #dc3545; margin-left: 10px;">🗑️ Xóa nội dung</button>
+
+
+
+<h3>Kết quả HTML:</h3>
+<div class="output" id="result"></div>
+
+<script>
+function convert() {
+  const chinese = document.getElementById("chinese").value;
+  const pinyinList = document.getElementById("pinyin").value.trim().split(/\s+/);
+  let result = "";
+  let pIndex = 0;
+
+  for (let char of chinese) {
+    if ("，。、！？,.：!?「」《》【】（）()“”".includes(char) || char.trim() === "" || /[a-zA-Z0-9]/.test(char)) {
+      result += char;
+    } else {
+      const pinyin = pIndex < pinyinList.length ? pinyinList[pIndex] : "";
+      result += `<ruby>${char}<rt>${pinyin}</rt></ruby>`;
+      pIndex++;
+    }
+  }
+
+  document.getElementById("result").innerText = result;
+  document.getElementById("copyBtn").style.display = "inline-block";
+  document.getElementById("copiedMessage").style.display = "none";
+}
+
+function copyResult() {
+  const text = document.getElementById("result").innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const msg = document.getElementById("copiedMessage");
+    msg.style.display = "inline";
+    setTimeout(() => { msg.style.display = "none"; }, 2000);
+  });
+}
+
+function clearAll() {
+  document.getElementById("chinese").value = "";
+  document.getElementById("pinyin").value = "";
+  document.getElementById("result").innerText = "";
+  document.getElementById("copyBtn").style.display = "none";
+  document.getElementById("copiedMessage").style.display = "none";
+}
+
+</script>
+
+</body>
+</html>
