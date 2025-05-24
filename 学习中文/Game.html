@@ -308,12 +308,12 @@
       
       //tu dong phat nhac
       const audio = document.getElementById("bgMusic");
-      audio.volume = 0.3;
-      document.body.addEventListener('click', () => {
-        if (audio.paused) {
-          audio.play().catch(() => {}); // tránh lỗi autoplay block
-        }
-      }, { once: true });
+      audio.volume = 0.25;
+      // document.body.addEventListener('click', () => {
+      //   if (audio.paused) {
+      //     audio.play().catch(() => {}); // tránh lỗi autoplay block
+      //   }
+      // }, { once: true });
     };
   </script>
   <audio id="tingSound">
