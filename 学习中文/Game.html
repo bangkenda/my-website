@@ -103,6 +103,11 @@
       border-color: #999;
     }
 
+    body.dark #toggle-theme {
+      background: #333;
+      color: #fff;
+    }
+
     .correct {
       border: 3px solid #2e7d32 !important;
       background-color: transparent !important;
@@ -129,7 +134,7 @@
 
   <div id="scoreboard">
     ✅ Đúng: <span id="correct">0</span><br>
-    ❌ Sai: <span id="wrong">0</span>
+    ❌  Sai: <span id="wrong">0</span>
   </div>
 
   <select id="levelSelector" onchange="changeLevel(this.value)">
@@ -149,7 +154,7 @@
 
   <button id="toggleTheme" onclick="toggleTheme()">🌙 Nền tối</button>
 
-  <h2>🎮 Game học từ vựng tiếng Trung</h2>
+  <h2>🎮</h2>
   <div id="hanzi">加载中...</div>
   <div id="pinyin"></div>
   <div id="options"></div>
@@ -168,7 +173,7 @@
         [array[i], array[j]] = [array[j], array[i]];
       }
     }
-
+    
     function updateScoreboard() {
       document.getElementById("correct").textContent = correctCount;
       document.getElementById("wrong").textContent = wrongCount;
@@ -252,13 +257,19 @@
     }
 
     function toggleTheme() {
-      document.body.classList.toggle("dark");
-      const btn = document.getElementById("toggleTheme");
-      btn.textContent = document.body.classList.contains("dark") ? "☀️ Nền sáng" : "🌙 Nền tối";
+      const darkMode = document.body.classList.toggle("dark");
+      document.getElementById("toggleTheme").textContent = darkMode ? "☀️ Nền sáng" : "🌙 Nền tối";
+      localStorage.setItem("theme", darkMode ? "dark" : "light");
     }
 
     window.onload = () => {
-      changeLevel(1);
+      // Khôi phục giao diện đã chọn
+      if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark");
+        document.getElementById("toggleTheme").textContent = "☀️ Nền sáng";
+      }
+
+      changeLevel(1); // Mặc định chọn HSK1 khi tải trang
     };
   </script>
 </body>
