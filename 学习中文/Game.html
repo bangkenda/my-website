@@ -12,9 +12,16 @@
     body {
       font-family: Arial, sans-serif;
       background: #f7f7f7;
+      color: #000;
       text-align: center;
       padding: 20px;
       margin: 0;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    body.dark {
+      background: #121212;
+      color: #fff;
     }
 
     #scoreboard {
@@ -22,11 +29,17 @@
       top: 10px;
       left: 10px;
       background-color: #fff;
+      color: #000;
       padding: 8px 12px;
       border-radius: 6px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
       font-size: 14px;
       z-index: 1000;
+    }
+
+    body.dark #scoreboard {
+      background-color: #333;
+      color: #fff;
     }
 
     #levelSelector {
@@ -35,6 +48,17 @@
       right: 10px;
       font-size: 14px;
       padding: 5px 10px;
+      z-index: 1000;
+    }
+
+    #toggleTheme {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
       z-index: 1000;
     }
 
@@ -51,7 +75,8 @@
     #pinyin {
       font-size: 22px;
       margin-bottom: 20px;
-      color: #555;
+      /* color: #555; */
+      color: red;
     }
 
     .option {
@@ -68,14 +93,20 @@
       transition: background 0.2s;
     }
 
+    body.dark .option {
+      background-color: #333;
+      color: #fff;
+      border-color: #999;
+    }
+
     .correct {
-      background-color: #c8e6c9;
-      border-color: #2e7d32;
+      background-color: #c8e6c9 !important;
+      border-color: #2e7d32 !important;
     }
 
     .wrong {
-      background-color: #ffcdd2;
-      border-color: #c62828;
+      background-color: #ffcdd2 !important;
+      border-color: #c62828 !important;
     }
 
     #next {
@@ -89,28 +120,26 @@
 <body>
 
   <div id="scoreboard">
-    <div>
-      ✅ Đúng: <span id="correct">0</span>
-    </div>
-    <div>
-      ❌ Sai : <span id="wrong">0</span>
-    </div>
+    ✅ Đúng: <span id="correct">0</span><br>
+    ❌ Sai: <span id="wrong">0</span>
   </div>
 
   <select id="levelSelector" onchange="changeLevel(this.value)">
-    <option value="1">HSK 1</option>
-    <option value="11">HSK 1-句子</option>
-    <option value="2">HSK 2</option>
-    <option value="12">HSK 2-句子</option>
-    <option value="3">HSK 3</option>
-    <option value="13">HSK 3-句子</option>
-    <option value="4">HSK 4</option>
-    <option value="14">HSK 4-句子</option>
-    <option value="5">HSK 5</option>
-    <option value="15">HSK 5-句子</option>
-    <option value="6">HSK 6</option>
-    <option value="16">HSK 6-句子</option>
+    <option value="1">HSK1-từ</option>
+    <option value="11">HSK1-câu</option>
+    <option value="2">HSK2-từ</option>
+    <option value="12">HSK2-câu</option>
+    <option value="3">HSK3-từ</option>
+    <option value="13">HSK3-câu</option>
+    <option value="4">HSK4-từ</option>
+    <option value="14">HSK4-câu</option>
+    <option value="5">HSK5-từ</option>
+    <option value="15">HSK5-câu</option>
+    <option value="6">HSK6-từ</option>
+    <option value="16">HSK6-câu</option>
   </select>
+
+  <button id="toggleTheme" onclick="toggleTheme()">🌙 Nền tối</button>
 
   <h2>🎮 Game học từ vựng tiếng Trung</h2>
   <div id="hanzi">加载中...</div>
@@ -153,7 +182,7 @@
       document.getElementById("pinyin").innerText = currentQuestion.pinyin;
 
       let options = [currentQuestion.meaning];
-      while (options.length < 4) {
+      while (options.length < 3) {
         const random = vocab[Math.floor(Math.random() * vocab.length)].meaning;
         if (!options.includes(random)) options.push(random);
       }
@@ -164,6 +193,15 @@
         btn.className = "option";
         btn.innerText = opt;
         btn.onclick = () => {
+          const buttons = document.querySelectorAll(".option");
+
+          buttons.forEach(b => {
+            b.disabled = true;
+            if (b.innerText === currentQuestion.meaning) {
+              b.classList.add("correct");
+            }
+          });
+
           if (opt === currentQuestion.meaning) {
             btn.classList.add("correct");
             correctCount++;
@@ -171,8 +209,8 @@
             btn.classList.add("wrong");
             wrongCount++;
           }
+
           updateScoreboard();
-          document.querySelectorAll(".option").forEach(b => b.disabled = true);
           document.getElementById("next").style.display = "inline-block";
         };
         optionsDiv.appendChild(btn);
@@ -205,7 +243,12 @@
       currentScript = script;
     }
 
-    // Tải HSK1 khi khởi động
+    function toggleTheme() {
+      document.body.classList.toggle("dark");
+      const btn = document.getElementById("toggleTheme");
+      btn.textContent = document.body.classList.contains("dark") ? "☀️ Nền sáng" : "🌙 Nền tối";
+    }
+
     window.onload = () => {
       changeLevel(1);
     };
